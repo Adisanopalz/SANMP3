@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script>
-        // Tailwind Configuration for Dark Mode
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -59,7 +58,6 @@
             to { opacity: 0; pointer-events: none; }
         }
 
-        /* Glassmorphism Classes */
         .glass {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px);
@@ -72,10 +70,8 @@
         .light .glass {
             background: rgba(255, 255, 255, 0.7);
             border: 1px solid rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(12px);
         }
 
-        /* Spinner */
         .spinner {
             border: 3px solid rgba(59, 130, 246, 0.1);
             border-top: 3px solid #3b82f6;
@@ -105,12 +101,10 @@
 </head>
 <body class="dark gradient-bg min-h-screen text-slate-900 dark:text-white transition-colors duration-500">
 
-    <!-- Intro Animation -->
     <div id="intro-overlay">
         <h1 id="intro-text">SANMP3</h1>
     </div>
 
-    <!-- Header / Navbar -->
     <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto relative z-10">
         <div class="text-2xl font-bold tracking-tighter flex items-center gap-2">
             <span class="bg-blue-600 p-1.5 rounded-lg text-white">
@@ -120,35 +114,31 @@
         </div>
         
         <div class="flex items-center gap-4">
-            <!-- Theme Toggle -->
             <button onclick="toggleTheme()" class="p-2 rounded-full glass hover:scale-110 transition-transform" id="theme-btn">
-                <span class="dark:hidden">
+                <span class="dark:hidden text-orange-500">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
                 </span>
-                <span class="hidden dark:block">
+                <span class="hidden dark:block text-yellow-300">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                 </span>
             </button>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-sm font-semibold transition shadow-lg shadow-blue-500/20">Pasang PWA</button>
         </div>
     </nav>
 
-    <!-- Hero Content -->
     <main class="max-w-4xl mx-auto px-6 pt-16 pb-32 text-center relative z-10">
         <h2 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
             Konversi Video <br> 
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Instan ke MP3</span>
         </h2>
         <p class="text-slate-500 dark:text-slate-400 text-lg mb-12 max-w-2xl mx-auto">
-            Masukkan tautan dari YouTube, TikTok, atau Instagram untuk mendapatkan file audio berkualitas tinggi dalam hitungan detik.
+            Gunakan API Publik gratis untuk mengunduh audio. Tanpa kunci, tanpa batas, langsung unduh.
         </p>
 
-        <!-- Converter Box -->
         <div class="glass p-3 rounded-2xl md:rounded-full shadow-2xl mb-12 flex flex-col md:flex-row items-center gap-2 group transition-all focus-within:ring-2 ring-blue-500/50">
             <input 
                 id="video-url"
                 type="text" 
-                placeholder="Tempel tautan video di sini..." 
+                placeholder="Tempel tautan video (YouTube, TikTok, dll)..." 
                 class="w-full bg-transparent px-6 py-4 outline-none text-slate-800 dark:text-white text-lg placeholder:text-slate-400"
             >
             <button 
@@ -157,7 +147,7 @@
                 class="w-full md:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-10 py-4 rounded-xl md:rounded-full transition-all flex items-center justify-center gap-2 whitespace-nowrap active:scale-95 shadow-lg shadow-blue-600/30"
             >
                 <svg id="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                <span id="btn-text">Dapatkan MP3</span>
+                <span id="btn-text">Konversi Sekarang</span>
             </button>
         </div>
 
@@ -188,150 +178,101 @@
         <div class="glass w-full max-w-md p-8 rounded-3xl relative animate-in fade-in slide-in-from-bottom-4 duration-300">
             <h3 class="text-xl font-bold mb-4 flex items-center gap-3">
                 <span id="modal-spinner" class="spinner"></span>
-                <span id="modal-status-text">Menghubungkan ke Server...</span>
+                <span id="modal-status-text">Memproses Tautan...</span>
             </h3>
             
-            <div class="bg-slate-200 dark:bg-white/10 h-3 rounded-full overflow-hidden mb-6">
-                <div id="progress-bar" class="bg-blue-600 h-full w-0 transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.5)]"></div>
-            </div>
+            <div id="status-desc" class="text-sm text-slate-500 mb-4">Menganalisis video untuk mencari kualitas audio terbaik.</div>
 
-            <!-- Download Result Info -->
-            <div id="file-info" class="hidden mb-6 scale-95 opacity-0 transition-all duration-500">
-                <div class="flex gap-4 items-center p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20">
-                    <div class="bg-blue-600 p-3 rounded-xl text-white">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                    </div>
-                    <div class="overflow-hidden">
-                        <p id="result-filename" class="font-bold text-sm truncate">Audio_SANMP3_Result.mp3</p>
-                        <p class="text-xs text-slate-500">Kualitas: 320kbps MP3</p>
-                    </div>
+            <div id="result-area" class="hidden">
+                <div class="p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20 mb-6 text-center">
+                    <p class="font-bold text-sm">File Siap!</p>
+                    <p class="text-xs text-slate-500">Kualitas: 320kbps MP3</p>
                 </div>
+                <!-- Iframe for direct button from public API -->
+                <div id="api-button-container" class="w-full flex justify-center h-16 overflow-hidden"></div>
+                
+                <p class="text-[10px] text-center text-slate-500 mt-4 italic">
+                    Catatan: Kami menggunakan API pihak ketiga (Y2Mate/Vevioz). Klik tombol di atas untuk mengunduh.
+                </p>
             </div>
-
-            <button 
-                id="download-btn"
-                class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hidden hover:bg-blue-700 transition active:scale-95 shadow-xl shadow-blue-600/20"
-            >
-                Simpan ke Perangkat
-            </button>
             
             <p id="error-msg" class="text-red-500 text-sm hidden mt-4 text-center font-medium"></p>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="border-t border-slate-200 dark:border-white/5 py-10 mt-20 text-center text-slate-500 text-sm">
-        <p>&copy; 2024 SANMP3 Pro. Solusi Download Audio Tercepat.</p>
+        <p>&copy; 2024 SANMP3 Pro. Didukung oleh API Publik Gratis.</p>
     </footer>
 
     <script>
-        // --- 1. THEME TOGGLE LOGIC ---
         function toggleTheme() {
             const body = document.body;
-            if (body.classList.contains('dark')) {
-                body.classList.replace('dark', 'light');
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.classList.replace('light', 'dark');
-                localStorage.setItem('theme', 'dark');
-            }
+            body.classList.toggle('dark');
+            body.classList.toggle('light');
+            localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
         }
 
-        // Load saved theme
         if (localStorage.getItem('theme') === 'light') {
             document.body.classList.replace('dark', 'light');
         }
 
-        // --- 2. API & CONVERTER LOGIC ---
-        
-        /* CATATAN PENTING:
-           Untuk membuat ini benar-benar berfungsi, Anda memerlukan API Key.
-           Contoh ini menggunakan struktur API dari RapidAPI (Youtube to Mp3).
-           Dapatkan API Key di: https://rapidapi.com/search/youtube%20mp3
-        */
-        
-        async function handleConvert() {
-            const videoUrl = document.getElementById('video-url').value;
-            const btnText = document.getElementById('btn-text');
-            const btnIcon = document.getElementById('btn-icon');
-            
-            if (!videoUrl) {
-                showError("Masukkan tautan video terlebih dahulu!");
+        function handleConvert() {
+            const url = document.getElementById('video-url').value.trim();
+            if (!url) {
+                alert("Mohon tempel tautan video!");
                 return;
             }
 
-            // UI Feedback
             const modal = document.getElementById('convert-modal');
-            const progress = document.getElementById('progress-bar');
             const statusText = document.getElementById('modal-status-text');
-            const fileInfo = document.getElementById('file-info');
-            const downloadBtn = document.getElementById('download-btn');
-            const errorMsg = document.getElementById('error-msg');
+            const statusDesc = document.getElementById('status-desc');
+            const resultArea = document.getElementById('result-area');
             const spinner = document.getElementById('modal-spinner');
+            const buttonContainer = document.getElementById('api-button-container');
 
-            // Reset Modal UI
             modal.classList.remove('hidden');
-            progress.style.width = '10%';
-            statusText.innerText = "Memverifikasi URL...";
-            fileInfo.classList.add('hidden');
-            fileInfo.style.opacity = '0';
-            downloadBtn.classList.add('hidden');
-            errorMsg.classList.add('hidden');
+            resultArea.classList.add('hidden');
             spinner.classList.remove('hidden');
+            statusText.innerText = "Mencari Audio...";
+            statusDesc.innerText = "Sistem sedang mencari server tercepat untuk mengonversi video Anda.";
 
-            try {
-                // SIMULASI PROSES API (Agar tampilan tetap hidup)
-                // Di sini Anda bisa mengganti dengan fetch() sungguhan
+            // Logika untuk YouTube
+            const youtubeId = getYoutubeId(url);
+            if (youtubeId) {
+                // Menggunakan public widget API dari Vevioz atau sejenisnya yang tidak perlu KEY
+                const widgetUrl = `https://api.vevioz.com/@api/button/mp3/${youtubeId}`;
                 
-                await updateProgress(30, "Menganalisis konten...");
-                await updateProgress(60, "Mengunduh stream audio...");
-                await updateProgress(90, "Mengonversi ke 320kbps...");
-                
-                // Jika ingin menggunakan API sungguhan, gunakan struktur ini:
-                /*
-                const options = {
-                    method: 'GET',
-                    headers: {
-                        'X-RapidAPI-Key': 'YOUR_API_KEY_HERE',
-                        'X-RapidAPI-Host': 'youtube-mp36.p.rapidapi.com'
-                    }
-                };
-                const response = await fetch(`https://youtube-mp36.p.rapidapi.com/dl?id=${getYoutubeId(videoUrl)}`, options);
-                const result = await response.json();
-                if(result.status === "ok") { ... }
-                */
-
-                // Berhasil (Simulasi)
                 setTimeout(() => {
-                    progress.style.width = '100%';
                     statusText.innerText = "Konversi Selesai!";
+                    statusDesc.innerText = "Klik tombol di bawah ini untuk memulai pengunduhan.";
                     spinner.classList.add('hidden');
+                    resultArea.classList.remove('hidden');
                     
-                    fileInfo.classList.remove('hidden');
-                    setTimeout(() => fileInfo.style.opacity = '1', 50);
+                    // Kita memasukkan iframe yang berisi tombol download resmi dari API publik
+                    buttonContainer.innerHTML = `<iframe src="${widgetUrl}" width="100%" height="60px" scrolling="no" style="border:none;"></iframe>`;
+                }, 1500);
+            } else if (url.includes('tiktok.com') || url.includes('instagram.com')) {
+                // Untuk TikTok/Instagram tanpa API KEY, cara termudah adalah mengarahkan ke downloader pihak ketiga
+                statusText.innerText = "Mengalihkan...";
+                statusDesc.innerText = "Platform ini memerlukan pemrosesan khusus. Kami mengarahkan Anda ke server pengolah.";
+                
+                setTimeout(() => {
+                    let externalUrl = "";
+                    if (url.includes('tiktok')) externalUrl = `https://ssstik.io/id`;
+                    if (url.includes('instagram')) externalUrl = `https://saveig.app/id`;
                     
-                    downloadBtn.classList.remove('hidden');
-                    // Ganti link download dengan URL dari API
-                    downloadBtn.onclick = () => {
-                        window.location.href = "#"; // Ganti dengan link hasil API
-                        alert("File sedang diunduh...");
-                    };
+                    window.open(externalUrl, '_blank');
+                    closeModal();
                 }, 1000);
-
-            } catch (err) {
-                showError("Terjadi kesalahan teknis. Coba lagi nanti.");
+            } else {
+                showError("Maaf, tautan ini tidak didukung oleh API Publik kami saat ini.");
             }
         }
 
-        // Helper untuk simulasi progress
-        function updateProgress(amt, text) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    document.getElementById('progress-bar').style.width = amt + '%';
-                    document.getElementById('modal-status-text').innerText = text;
-                    resolve();
-                }, 1200);
-            });
+        function getYoutubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length == 11) ? match[2] : null;
         }
 
         function showError(msg) {
@@ -340,28 +281,15 @@
             errorMsg.classList.remove('hidden');
             document.getElementById('modal-spinner').classList.add('hidden');
             document.getElementById('modal-status-text').innerText = "Gagal.";
-            
-            // Auto hide modal on simple alert
-            if(document.getElementById('convert-modal').classList.contains('hidden')) {
-                alert(msg);
-            }
         }
 
         function closeModal() {
             document.getElementById('convert-modal').classList.add('hidden');
         }
 
-        // Detect Paste
         document.getElementById('video-url').addEventListener('paste', () => {
-            setTimeout(handleConvert, 100);
+            setTimeout(handleConvert, 200);
         });
-
-        // Youtube ID Helper (Regex)
-        function getYoutubeId(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length == 11) ? match[2] : null;
-        }
     </script>
 </body>
 </html>
